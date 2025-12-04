@@ -1,0 +1,17 @@
+﻿@model SampleApp_MPI.Models.Patient
+
+<h1>@($"{Model.LastName} {Model.FirstName} {Model.MiddleName}")</h1>
+<table>
+    <tr>
+        <th>PIN</th>
+        <td>@Model.PIN</td>
+        <th>Gender</th>
+        <td>@Model.Sex</td>
+        <th>DOB</th>
+        <td>@Model.DOB.ToString("dd MMM yyyy")</td>
+        <th>Chiefdom</th>
+        <td>@(Model.Chiefdom ?? "-")</td>
+        <td>Inkhundla</td>
+        <td>@(Model.Inkhundla ?? "-")</td>
+    </tr>
+</table>
