@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using SampleApp_MPI.Models;
+using SampleApp_MPI.Models.ViewModels;
+using SampleApp_MPI.Services;
 using SampleApp_MPI.Utilities;
 using System.Diagnostics;
 using System.Security.Cryptography;
@@ -9,10 +11,12 @@ namespace SampleApp_MPI.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly IConfiguration _config;
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(IConfiguration config, ILogger<HomeController> logger)
         {
+            _config = config;
             _logger = logger;
         }
 
@@ -21,37 +25,61 @@ namespace SampleApp_MPI.Controllers
             return View(new Search());
         }
 
-        public IActionResult Create() 
+        public IActionResult Create()
         {
             return View(new Patient());
         }
 
         [HttpPost]
-        public IActionResult Create(Patient patient) 
+        public async Task<IActionResult> Create(Patient patient)
         {
-            
+
             if (ModelState.IsValid)
             {
                 patient.PatientId = Guid.NewGuid();
                 patient.AlternateId = $"H001{new Random().Next(101010, 999999)}-{new Random().Next(1, 9)}";
-                patient.Inkhundla = "Unspecified";
-                patient.Chiefdom = "Unspecified";
 
-                var resource = FHIRParser.AddPatientResource(patient);
+                var response = await PatientService.Create(_config.GetValue<string>("ApiBaseUrl")!, patient);
 
-                if (resource.IsCompletedSuccessfully)
-                {
+                if (response.IsSuccessStatusCode)
                     return RedirectToAction("Index");
-                }
+
+                _logger.LogDebug("Error creating patient: {StatusCode} - {ReasonPhrase}", response.StatusCode, response.ReasonPhrase);
             }
+
             return View(patient);
         }
 
         public async Task<IActionResult> Search()
         {
-            var result = await FHIRParser.GetPatientResource("f634c0c6-e23b-42a6-9a1b-30486795d1a1");
-            
-            return View(result);
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Search(ClientSearchViewModel vm)
+        {
+            var baseUrl = _config.GetValue<string>("ApiBaseUrl");
+            var searchTerm = vm.SearchTerm.Trim();
+
+            string url;
+
+            if (searchTerm.Any(char.IsDigit))
+            {
+                url = $"{baseUrl}/Patient?identifier={searchTerm}";
+            }
+            else
+            {
+                url = $"{baseUrl}/Patient?given={searchTerm}";
+            }
+
+            var result = await PatientService.Search(url);
+
+            if (result.Count > 0)
+                vm.SearchResults = result;
+            else
+                ModelState.AddModelError(string.Empty, "No records found matching the search criteria.");
+
+            return View(vm);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

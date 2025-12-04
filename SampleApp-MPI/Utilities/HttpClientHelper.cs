@@ -18,11 +18,11 @@ namespace SampleApp_MPI.Utilities
             }
         }
 
-        public static async Task<HttpResponseMessage> GetAsync(string url, string searchTerm)
+        public static async Task<HttpResponseMessage> GetAsync(string url)
         {
             using (var httpClient = CreateHttpClient())
             {
-                return await httpClient.GetAsync($"{url}{searchTerm}");
+                return await httpClient.GetAsync(url);
             }
         }
 
@@ -42,7 +42,7 @@ namespace SampleApp_MPI.Utilities
             var options = new JsonSerializerOptions().ForFhir(ModelInfo.ModelInspector).Pretty();
             var patientResourceJson = JsonSerializer.Serialize(resource, options);
             var stringContent = new StringContent(patientResourceJson);
-            
+
             stringContent.Headers.ContentType = new MediaTypeHeaderValue("application/fhir+json");
             stringContent.Headers.ContentLength = Encoding.UTF8.GetByteCount(patientResourceJson);
 

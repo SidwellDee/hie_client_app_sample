@@ -1,6 +1,7 @@
 ﻿using Hl7.Fhir.Validation;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using static SampleApp_MPI.Utilities.Constants;
 
 namespace SampleApp_MPI.Models
 {
@@ -21,19 +22,16 @@ namespace SampleApp_MPI.Models
         public string LastName { get; set; }
 
         [Column(TypeName = "smalldatetime")]
+        [Required(ErrorMessage = "Date of birth is required")]
         public DateTime DOB { get; set; }
         public Sex Sex { get; set; }
+
+        [Required(ErrorMessage = "Chiefdom is required")]
         public string? Chiefdom { get; set; }
 
+        [Required(ErrorMessage = "Inkhundla is required")]
         public string? Inkhundla { get; set; }
-        
-        public string? Nationality { get; set; } 
-    }
 
-    public enum Sex : byte
-    {
-        male = 1,
-        female = 2,
-        other = 3
+        public string? Nationality { get; set; }
     }
 }

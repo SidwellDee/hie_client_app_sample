@@ -18,7 +18,7 @@ namespace SampleApp_MPI.Controllers
         private readonly string API_BASE_URL;
         private readonly DataContext _context;
 
-        public PrescriptionController(IConfiguration config,DataContext context)
+        public PrescriptionController(IConfiguration config, DataContext context)
         {
             API_BASE_URL = config.GetSection("ApiBaseUrl").Value;
             _context = context;
@@ -29,28 +29,28 @@ namespace SampleApp_MPI.Controllers
             return View();
         }
 
-        public async Task<IActionResult> Prescribe() 
+        public async Task<IActionResult> Prescribe()
         {
             return View(await new PrescriptionViewModel().Init(_context, "1af5f264-52cc-4fcc-8a01-353fe94bd43a"));
         }
 
         [HttpPost]
-        public async Task<IActionResult> Prescribe(PrescriptionViewModel vm) 
+        public async Task<IActionResult> Prescribe(PrescriptionViewModel vm)
         {
-            if (ModelState.IsValid) 
+            if (ModelState.IsValid)
             {
                 //Save Prescription Data Locally
                 vm.Prescription.Id = Guid.NewGuid();
                 var result = SaveData(vm);
 
-                if (result > 0) 
+                if (result > 0)
                 {
                     //Create and Push Fhir Bundle to HIE
                     var bundle = CreateFhirBundle(vm.Prescription.Id);
 
                     var httpResult = await HttpClientHelper.PostAsync($"{API_BASE_URL}/fhir", bundle);
 
-                    if (httpResult.IsSuccessStatusCode) 
+                    if (httpResult.IsSuccessStatusCode)
                     {
                         return RedirectToAction(nameof(Details), new { patientId = vm.Prescription.PatientId });
                     }
@@ -60,15 +60,15 @@ namespace SampleApp_MPI.Controllers
             return View(await vm.Init(_context, vm.Patient.PatientId.ToString()));
         }
 
-        public async Task<IActionResult> Dispense(Guid patientId) 
+        public async Task<IActionResult> Dispense(Guid patientId)
         {
             return View(await new PrescriptionDispenseViewModel().Init(_context, API_BASE_URL, patientId));
         }
 
         [HttpPost]
-        public async Task<IActionResult> Dispense(PrescriptionDispenseViewModel vm) 
+        public async Task<IActionResult> Dispense(PrescriptionDispenseViewModel vm)
         {
-            if (ModelState.IsValid) 
+            if (ModelState.IsValid)
             {
                 var location = _context.Location.FirstOrDefault();
 
@@ -78,13 +78,13 @@ namespace SampleApp_MPI.Controllers
                     Type = Bundle.BundleType.Transaction
                 };
 
-                foreach (var item in vm.MedicationDispenseList) 
+                foreach (var item in vm.MedicationDispenseList)
                 {
                     item.Id = Guid.NewGuid();
                     var bundleEntry = new Bundle.EntryComponent
                     {
                         FullUrl = $"MedicationDispense/{item.Id}",
-                        Resource = MedicationDispenseTranslator.ToFhir(item,location.Id),
+                        Resource = MedicationDispenseTranslator.ToFhir(item, location.Id),
                         Request = new Bundle.RequestComponent
                         {
                             Method = Bundle.HTTPVerb.PUT,
@@ -109,7 +109,7 @@ namespace SampleApp_MPI.Controllers
         {
             var patient = await FHIRParser.GetPatientResource(patientId.ToString());
 
-            var response = await HttpClientHelper.GetAsync(API_BASE_URL, $"/fhir/MedicationRequest?subject=Patient/{patientId}");
+            var response = await HttpClientHelper.GetAsync($"{API_BASE_URL}/fhir/MedicationRequest?subject=Patient/{patientId}");
             if (response.IsSuccessStatusCode)
             {
                 var jsonResult = await response.Content.ReadAsStringAsync();
@@ -138,7 +138,7 @@ namespace SampleApp_MPI.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private int SaveData(PrescriptionViewModel vm) 
+        private int SaveData(PrescriptionViewModel vm)
         {
             vm.Encounter.Id = Guid.NewGuid();
 

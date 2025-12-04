@@ -1,4 +1,5 @@
 using Hl7.Fhir.Model;
+using Hl7.Fhir.Serialization;
 using SampleApp_MPI.Translators;
 using SampleApp_MPI.Utilities;
 
@@ -6,40 +7,42 @@ namespace SampleApp_MPI.Services;
 
 public class PatientService
 {
-
-    private readonly IConfiguration _config;
-
-    public PatientService(IConfiguration config)
+    public static async Task<HttpResponseMessage> Create(string url, Models.Patient patient)
     {
-        _config = config;
-    }
-
-    public static async Task<string> AddPatientResource(Models.Patient patient)
-    {
-        var entries = new List<Resource>{ patient.ToFhir() };
+        var entries = new List<Resource> { patient.ToFhir() };
 
         var response = await HttpClientHelper
-            .PostAsync(_config.GetValue<string>("ApiBaseUrl"), BundleFactory.CreateBundle(entries));
+            .PostAsync(url, BundleFactory.CreateBundle(entries));
 
-        return await response.Content.ReadAsStringAsync(); 
+        return response;
     }
 
-    // public static async Task<Models.Patient> GetPatientResource(string searchTerm) 
-    // {
-    //     var response = await HttpClientHelper.GetAsync("http://172.209.216.154:5001/fhir/Patient/", searchTerm);
+    public static async Task<List<Models.Patient>> Search(string url)
+    {
+        var response = await HttpClientHelper.GetAsync(url);
 
-    //     if (response.IsSuccessStatusCode)
-    //     {
-    //         var patientJson = await response.Content.ReadAsStringAsync();
+        if (response.IsSuccessStatusCode)
+        {
+            var jsonResult = await response.Content.ReadAsStringAsync();
 
-    //         FhirJsonParser parser = new FhirJsonParser();
-    //         var fhirPatient = parser.Parse<Hl7.Fhir.Model.Patient>(patientJson);
+            var bundle = new FhirJsonParser().Parse<Bundle>(jsonResult);
 
-    //         return FromFHIR(fhirPatient);
-    //     }
+            if (bundle?.Total > 0)
+            {
+                List<Models.Patient> patients = new List<Models.Patient>();
 
-    //     return null;
-    // }
+                foreach (var entry in bundle.Entry)
+                {
+                    if (entry.Resource is Patient fhirPatient)
+                    {
+                        patients.Add(fhirPatient.ToEmrType());
+                    }
+                }
 
-    
+                return patients;
+            }
+        }
+
+        return null;
+    }
 }

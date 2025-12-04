@@ -4,7 +4,7 @@ namespace SampleApp_MPI.Translators
 {
     public static class EncounterTranslator
     {
-        public static Encounter ToFhir(Models.Encounter entity, Guid locationId) 
+        public static Encounter ToFhir(Models.Encounter entity, Guid locationId)
         {
             var encounter = new Encounter
             {
@@ -17,19 +17,19 @@ namespace SampleApp_MPI.Translators
                     }
                 },
                 Status = Encounter.EncounterStatus.Finished,
-                Class = new Coding 
+                Class = new Coding
                 {
                     System = "http://localhost:3447/fhir/CodeSystem/SzEncounterClassificationCS",
                     Code = entity.Department.Code,
                     Display = entity.Department.Name
                 },
-                ReasonCode = new List<CodeableConcept> 
-                { 
+                ReasonCode = new List<CodeableConcept>
+                {
                     new CodeableConcept
                     {
-                        Coding = new List<Coding> 
+                        Coding = new List<Coding>
                         {
-                            new Coding 
+                            new Coding
                             {
                                 System = "http://localhost:3447/fhir/CodeSystem/SzServicePointCS",
                                 Code = entity.ServicePoint.Code,
@@ -50,7 +50,7 @@ namespace SampleApp_MPI.Translators
                         Status = Encounter.EncounterLocationStatus.Completed
                     }
                 }
-        };
+            };
 
             return encounter;
         }

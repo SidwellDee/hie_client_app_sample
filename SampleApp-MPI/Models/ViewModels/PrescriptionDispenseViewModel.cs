@@ -35,7 +35,7 @@ namespace SampleApp_MPI.Models.ViewModels
         {
             var medicationList = new List<Models.Medication>();
 
-            var response = await HttpClientHelper.GetAsync(baseApiUrl, $"/fhir/MedicationRequest?subject=Patient/{patientId}");
+            var response = await HttpClientHelper.GetAsync($"{baseApiUrl}/fhir/MedicationRequest?subject=Patient/{patientId}");
             if (response.IsSuccessStatusCode)
             {
                 var jsonResult = await response.Content.ReadAsStringAsync();

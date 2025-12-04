@@ -1,6 +1,7 @@
 ﻿using Hl7.Fhir.Model;
 using Hl7.Fhir.Serialization;
 using SampleApp_MPI.Models;
+using static SampleApp_MPI.Utilities.Constants;
 
 namespace SampleApp_MPI.Utilities
 {
@@ -10,12 +11,12 @@ namespace SampleApp_MPI.Utilities
         {
             var response = await HttpClientHelper.PostAsync("http://172.209.216.154:5001/fhir/Patient", ToFHIR(patient));
 
-            return await response.Content.ReadAsStringAsync(); 
+            return await response.Content.ReadAsStringAsync();
         }
 
-        public static async Task<Models.Patient> GetPatientResource(string searchTerm) 
+        public static async Task<Models.Patient> GetPatientResource(string searchTerm)
         {
-            var response = await HttpClientHelper.GetAsync("http://172.209.216.154:5001/fhir/Patient/", searchTerm);
+            var response = await HttpClientHelper.GetAsync($"http://172.209.216.154:5001/fhir/Patient/{searchTerm}");
 
             if (response.IsSuccessStatusCode)
             {
@@ -41,9 +42,9 @@ namespace SampleApp_MPI.Utilities
                     {
                         Family = patient.LastName,
                         Given = new List<string>
-                        { 
-                            patient.FirstName ?? string.Empty, patient.MiddleName ?? string.Empty                       
-                        } 
+                        {
+                            patient.FirstName ?? string.Empty, patient.MiddleName ?? string.Empty
+                        }
                     }
                 },
                 Gender = setGender(patient.Sex),
@@ -88,7 +89,7 @@ namespace SampleApp_MPI.Utilities
                                 }
                             },
                             Text = patient.Inkhundla
-                        }                   
+                        }
                     },
                     new Extension
                     {
@@ -101,7 +102,7 @@ namespace SampleApp_MPI.Utilities
                                 {
                                     System = "http://192.168.10.200:3447/fhir/ValueSet/SzChiefdomVS",
                                     Code = patient.Chiefdom,
-                                    Display = patient.Chiefdom, 
+                                    Display = patient.Chiefdom,
                                 }
                             },
                             Text = patient.Chiefdom
@@ -124,7 +125,7 @@ namespace SampleApp_MPI.Utilities
                                     System = "http://192.168.10.200:3447/fhir/CodeSystem/SzPersonIdentificationsCS",
                                     Code = "PI",
                                     Display = "Personal ID Number"
-                                } 
+                                }
                             }
                         }
 
@@ -173,9 +174,9 @@ namespace SampleApp_MPI.Utilities
 
         public static AdministrativeGender setGender(Sex sex)
         {
-            if(sex == Sex.male)
+            if (sex == Sex.male)
                 return AdministrativeGender.Male;
-            else if(sex == Sex.female)
+            else if (sex == Sex.female)
                 return AdministrativeGender.Female;
             else return AdministrativeGender.Other;
         }

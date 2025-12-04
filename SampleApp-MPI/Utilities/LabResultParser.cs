@@ -17,7 +17,7 @@ namespace SampleApp_MPI.Utilities
 
         public static async Task<Models.LabResult> GetVitalResource(string searchTerm)
         {
-            var response = await HttpClientHelper.GetAsync("http://20.164.61.81:5001/fhir/Patient/", searchTerm);
+            var response = await HttpClientHelper.GetAsync($"http://20.164.61.81:5001/fhir/Patient/{searchTerm}");
 
             if (response.IsSuccessStatusCode)
             {
@@ -49,7 +49,7 @@ namespace SampleApp_MPI.Utilities
                             Reference = "Practitioner/SampleSzPractitioner"
                         }
                     }
-                }, 
+                },
                 Status = ObservationStatus.Final,
                 Code = new CodeableConcept
                 {
@@ -81,13 +81,13 @@ namespace SampleApp_MPI.Utilities
                            Reference = "Practitioner/SampleSzPractitioner"
                        }
 
-               }, 
+               },
                 Value = new Quantity
                 {
-                    Value =16 , //16.5,
+                    Value = 16, //16.5,
                     Unit = "Copies/ml"
-                }, 
-                Interpretation = new List <CodeableConcept>
+                },
+                Interpretation = new List<CodeableConcept>
                 {
                     new CodeableConcept
                     {
@@ -103,7 +103,7 @@ namespace SampleApp_MPI.Utilities
                         Text = "Low"
                     }
 
-                }, 
+                },
                 Specimen = new ResourceReference
                 {
                     Reference = "Specimen/SampleSzSpecimen"
@@ -128,7 +128,7 @@ namespace SampleApp_MPI.Utilities
                 Interpretation = labResult.Interpretation.ToList().ToString(),
                 Specimen = labResult.Specimen.ToString(),
                 Performer = labResult.Performer.FirstOrDefault()?.Reference,
-               
+
             };
             return entity;
         }

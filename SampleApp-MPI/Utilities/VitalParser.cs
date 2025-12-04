@@ -11,13 +11,13 @@ namespace SampleApp_MPI.Utilities
         public static async Task<string> AddVitalResource(Models.Vital vital)
         {
             var response = await HttpClientHelper.PostAsync("http://20.164.61.81:5001/fhir/Patient", ToFHIR(vital));
-            
+
             return await response.Content.ReadAsStringAsync();
         }
 
         public static async Task<Models.Vital> GetVitalResource(string searchTerm)
         {
-            var response = await HttpClientHelper.GetAsync("http://20.164.61.81:5001/fhir/Patient/", searchTerm);
+            var response = await HttpClientHelper.GetAsync("$http://20.164.61.81:5001/fhir/Patient/{searchTerm}");
 
             if (response.IsSuccessStatusCode)
             {

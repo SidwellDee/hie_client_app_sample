@@ -38,7 +38,7 @@ namespace SampleApp_MPI.Models.ViewModels
             {
                 Patient = patient;
 
-                patient.EMRId = "XYZ"; //TO DO: Ensure this is fetched correctly from HIE
+                patient.AlternateId = "XYZ"; //TO DO: Ensure this is fetched correctly from HIE
                 _context.Patient.Add(patient);
                 _context.SaveChanges();
             }

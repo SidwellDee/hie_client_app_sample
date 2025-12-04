@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using SampleApp_MPI.Models;
 using System.IO;
 using System.Security.AccessControl;
+using static SampleApp_MPI.Utilities.Constants;
 
 namespace SampleApp_MPI.DAL
 {
@@ -60,13 +61,13 @@ namespace SampleApp_MPI.DAL
                 new Product { Id = 2, Code = "100648", Name = "Abacavir 300mg Tablets 60 TABS", Form = ProductForm.Tablet },
                 new Product { Id = 3, Code = "102273", Name = "Isoniazid Tablets 300mg 28 TABS", Form = ProductForm.Tablet },
                 new Product { Id = 4, Code = "102268", Name = "Ethambutol FILM COATEDTablets 100mg 100 TABS", Form = ProductForm.Tablet },
-                new Product { Id = 5, Code = "100686", Name = "Isoniazid 100mg Tablets 100 TABS", Form = ProductForm.Tablet },          
+                new Product { Id = 5, Code = "100686", Name = "Isoniazid 100mg Tablets 100 TABS", Form = ProductForm.Tablet },
                 new Product { Id = 6, Code = "102276", Name = "Levofloxacin Tablets 500mg 100 TABS", Form = ProductForm.Tablet },
                 new Product { Id = 7, Code = "100449", Name = "Acyclovir Eye Ointment 3 % 4.5 G", Form = ProductForm.Tablet },
                 new Product { Id = 8, Code = "100304", Name = "Adrenaline Injection 1:1000 10 AMPS", Form = ProductForm.Tablet },
                 new Product { Id = 9, Code = "100460", Name = "Betamethasone Cream 0.1 % 15G", Form = ProductForm.Tablet },
                 new Product { Id = 10, Code = "100014", Name = "Cefaclor Tablets 375mg 10 TABS", Form = ProductForm.Tablet },
-                new Product { Id = 11, Code = "102443", Name = "Cefazolin 1g; 10 Vial 10 VIAL", Form= ProductForm.Vial },
+                new Product { Id = 11, Code = "102443", Name = "Cefazolin 1g; 10 Vial 10 VIAL", Form = ProductForm.Vial },
                 new Product { Id = 12, Code = "100689", Name = "Saquinavir 200mg Capsules 270 CAPS", Form = ProductForm.Capsule },
                 new Product { Id = 13, Code = "100009", Name = "Amoxycillin Capsules 500mg 500 CAPS", Form = ProductForm.Capsule }
             );
@@ -76,7 +77,7 @@ namespace SampleApp_MPI.DAL
                 new Practitioner { Id = Guid.NewGuid(), PIN = "7702026200123", FirstName = "Susan", LastName = "Smith", Sex = Sex.female, DOB = DateTime.Parse("1989-02-02") },
                 new Practitioner { Id = Guid.NewGuid(), PIN = "8902026200873", FirstName = "Carol", LastName = "Dlamini", Sex = Sex.female, DOB = DateTime.Parse("1989-02-02") },
                 new Practitioner { Id = Guid.NewGuid(), PIN = "6002026200147", FirstName = "Peter", LastName = "Pan", Sex = Sex.female, DOB = DateTime.Parse("1960-02-02") },
-                new Practitioner { Id = Guid.NewGuid(), PIN = "8102026200159", FirstName = "Gloria", LastName = "Madu", Sex = Sex.female, DOB = DateTime.Parse("81-02-02") }
+                new Practitioner { Id = Guid.NewGuid(), PIN = "8102026200159", FirstName = "Gloria", LastName = "Madu", Sex = Sex.female, DOB = DateTime.Parse("1981-02-02") }
             );
         }
     }
