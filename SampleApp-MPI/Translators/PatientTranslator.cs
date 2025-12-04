@@ -136,10 +136,10 @@ public static class PatientTranslator
             DOB = DateTime.Parse(fhirPatient.BirthDate),
 
             PIN = fhirPatient.Identifier
-                .FirstOrDefault(a => a.System == "http://homeaffairs.sys")?.Value,
+                .FirstOrDefault(a => a.System == "urn:homeaffairs:population-register")?.Value,
 
             AlternateId = fhirPatient.Identifier
-                .FirstOrDefault(a => a.System == "http://mfl.sys/m001")?.Value,
+                .FirstOrDefault(a => a.System.Contains("urn:health"))?.Value,
         };
 
         return entity;
