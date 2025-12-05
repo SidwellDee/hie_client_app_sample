@@ -58,26 +58,29 @@ namespace SampleApp_MPI.Controllers
         [HttpPost]
         public async Task<IActionResult> Search(ClientSearchViewModel vm)
         {
-            var baseUrl = _config.GetValue<string>("ApiBaseUrl");
-            var searchTerm = vm.SearchTerm.Trim();
-
-            string url;
-
-            if (searchTerm.Any(char.IsDigit))
+            if(ModelState.IsValid)
             {
-                url = $"{baseUrl}/Patient?identifier={searchTerm}";
-            }
-            else
-            {
-                url = $"{baseUrl}/Patient?given={searchTerm}";
-            }
+                var baseUrl = _config.GetValue<string>("ApiBaseUrl");
+                var searchTerm = vm.SearchTerm.Trim();
 
-            var result = await PatientService.Search(url);
+                string url;
 
-            if (result.Count > 0)
-                vm.SearchResults = result;
-            else
-                ModelState.AddModelError(string.Empty, "No records found matching the search criteria.");
+                if (searchTerm.Any(char.IsDigit))
+                {
+                    url = $"{baseUrl}/Patient?identifier={searchTerm}";
+                }
+                else
+                {
+                    url = $"{baseUrl}/Patient?given={searchTerm}";
+                }
+
+                var result = await PatientService.Search(url);
+
+                if (result.Count > 0)
+                    vm.SearchResults = result;
+                else
+                    ModelState.AddModelError(string.Empty, "No records found matching the search criteria.");
+            }
 
             return View(vm);
         }

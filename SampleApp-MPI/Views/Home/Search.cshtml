@@ -22,10 +22,11 @@
                                 </label>
                                 <div class="">
                                     <input asp-for="SearchTerm" class="form-control"
-                                        placeholder="Enter PIN, Name, or ID" />
+                                        placeholder="Enter Identifier or Name" />
+                                    <span asp-validation-for="SearchTerm" class="text-danger small"></span>
                                 </div>
                                 <small class="text-muted">
-                                    Search by identifier, first name, last name
+                                    Search by identifier, first name
                                 </small>
                             </div>
 
